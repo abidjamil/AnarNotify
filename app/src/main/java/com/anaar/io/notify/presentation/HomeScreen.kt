@@ -1,6 +1,5 @@
 package com.anaar.io.notify.presentation
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,8 +26,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anaar.io.notify.clearUserId
 import com.anaar.io.notify.getUserIdFlow
 import com.anaar.io.notify.ui.theme.PinkPrimary
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -49,7 +52,7 @@ fun HomeScreen(
     }
 
     Column(
-        modifier= Modifier.padding(top = 50.dp),
+        modifier = Modifier.padding(top = 50.dp),
         horizontalAlignment = Alignment.CenterHorizontally, // centers horizontally
         verticalArrangement = Arrangement.Center // centers vertically
     ) {
@@ -61,18 +64,20 @@ fun HomeScreen(
                 .padding(16.dp)
         ) {
 
-            Text(text = "Receiving Calls ...",
-                modifier= Modifier.fillMaxHeight().align(Alignment.Center))
+            Text(
+                text = "Receiving Calls ...",
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .align(Alignment.Center)
+            )
 
             // Bottom continue button (100dp from bottom)
             Button(
                 onClick = {
-                    if (userId.isEmpty()) {
-                        Toast.makeText(context, "Please input id", Toast.LENGTH_SHORT).show()
-                    } else {
-                        userId=""
-                        onLogoutClick(userId)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        context.clearUserId()
                     }
+                    onLogoutClick(userId)
                 },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -81,7 +86,8 @@ fun HomeScreen(
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = PinkPrimary, // background color
-                    contentColor = Color.White)
+                    contentColor = Color.White
+                )
             ) {
                 Text("Logout")
             }

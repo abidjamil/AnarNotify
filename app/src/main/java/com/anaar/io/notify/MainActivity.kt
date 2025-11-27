@@ -72,7 +72,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val context = this
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(
                     this,
@@ -101,31 +100,12 @@ class MainActivity : ComponentActivity() {
             startForRequestRoleResult.launch(intent)
         }
 
-
-
         setContent {
 
             AnaarNotifyTheme {
 
                 AppNavigation()
 
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//
-//                    SplashScreen(onTimeout = {
-//                        HomeScreen(
-//                            modifier = Modifier.padding(innerPadding),
-//                            onSaveClick = { userId ->
-
-//                            },
-//                            onLogoutClick = {
-//                                Toast.makeText(context, "deleted", Toast.LENGTH_SHORT).show()
-//                                CoroutineScope(Dispatchers.IO).launch {
-//                                    context.clearUserId()
-//                                }
-//                            })
-//                    })
-
-//                }
             }
         }
     }

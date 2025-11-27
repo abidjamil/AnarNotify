@@ -1,10 +1,11 @@
 package com.anaar.io.notify.api
 
 import com.anaar.io.notify.CallRequest
-import com.anaar.io.notify.User
 import com.anaar.io.notify.model.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface ApiService {
@@ -13,8 +14,9 @@ interface ApiService {
         @Body request: CallRequest
     ): Response<Unit>
 
+    @FormUrlEncoded
     @POST("api/notify_login")
     suspend fun login(
-        @Body request: User
+        @FieldMap fields: Map<String, String>
     ): Response<LoginResponse>
 }

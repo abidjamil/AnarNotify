@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anaar.io.notify.R
-import com.anaar.io.notify.User
 import com.anaar.io.notify.api.RetrofitClient
 import com.anaar.io.notify.saveUserId
 import com.anaar.io.notify.ui.theme.PinkPrimary
@@ -44,6 +43,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun LoginScreen(onLoginClick: (String) -> Unit) {
@@ -136,13 +136,17 @@ fun login(context: Context, email: String?, password: String?, onLoginClick: (St
         return
     }
     CoroutineScope(Dispatchers.IO).launch {
-        val request = User(email = email, password = password)
+        val request= HashMap<String, String>()
+        request.put("email",email)
+        request.put("password",password)
         try {
             val response = RetrofitClient.apiService.login(request)
             if (response.isSuccessful) {
                 val userId = response.body()?.userId ?: ""
                 context.saveUserId(userId)
-                onLoginClick.invoke(userId)
+                withContext(Dispatchers.Main) {
+                    onLoginClick.invoke(userId)
+                }
             }
             Log.d("notify app", "sendCallToApi: " + Gson().toJson(response.body()))
         } catch (e: Exception) {

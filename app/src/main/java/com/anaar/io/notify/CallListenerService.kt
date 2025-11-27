@@ -21,10 +21,6 @@ data class CallRequest(
     val phone: String
 )
 
-data class User(
-    val email: String,
-    val password: String
-)
 class MyCallScreeningService : CallScreeningService() {
 
     override fun onScreenCall(callDetails: Call.Details) {
