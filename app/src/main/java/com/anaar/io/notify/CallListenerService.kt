@@ -34,7 +34,7 @@ class MyCallScreeningService : CallScreeningService() {
                 response.setSkipNotification(false)
                 CoroutineScope(Dispatchers.IO).launch {
                     callDetails.getHandle()?.let {
-                        sendCallToApi(callDetails.getHandle().toString())
+                        sendCallToApi(normalizePhone(callDetails.getHandle().toString()))
                     }
                 }
                 respondToCall(callDetails, response.build())
@@ -48,9 +48,9 @@ class MyCallScreeningService : CallScreeningService() {
             .map { prefs -> prefs[stringPreferencesKey("user_id")]?.toIntOrNull() ?: 0 }
             .first()
 
-        if(phone.removeRange(0,3).isEmpty().not()) {
+        if(phone.isEmpty().not()) {
 
-            val request = CallRequest(user_id = userId, phone = phone.removeRange(0, 3))
+            val request = CallRequest(user_id = userId, phone = phone)
 
             try {
                 val response = RetrofitClient.apiService.sendCall(request)
@@ -71,5 +71,27 @@ class MyCallScreeningService : CallScreeningService() {
             }
         }
     }
+
+    fun normalizePhone(raw: String): String {
+        // remove "tel:" prefix if present
+        val number = raw.removePrefix("tel:")
+
+        return when {
+            number.startsWith("+92") -> {
+                // convert +92XXXXXXXXXX → 0XXXXXXXXXX
+                val withoutCode = number.removePrefix("+92")
+                "0$withoutCode"
+            }
+            number.startsWith("03") -> {
+                // already correct format
+                number
+            }
+            else -> {
+                // fallback: return as is
+                number
+            }
+        }
+    }
+
 }
 
