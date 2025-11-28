@@ -141,14 +141,20 @@ fun login(context: Context, email: String?, password: String?, onLoginClick: (St
         request.put("password",password)
         try {
             val response = RetrofitClient.apiService.login(request)
-            if (response.isSuccessful) {
+            Log.d("notify app", "sendCallToApi: " + response)
+            if (response.isSuccessful && !response.body()?.error!!) {
                 val userId = response.body()?.userId ?: ""
-                context.saveUserId(userId)
+                context.saveUserId(userId.toString())
                 withContext(Dispatchers.Main) {
-                    onLoginClick.invoke(userId)
+                    onLoginClick.invoke(userId.toString())
                 }
             }
-            Log.d("notify app", "sendCallToApi: " + Gson().toJson(response.body()))
+            else{
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, response.body()?.error_msg?:"Wrong credentials", Toast.LENGTH_SHORT).show()
+                }
+            }
+           Log.d("notify app", "sendCallToApi: " + Gson().toJson(response.body()))
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()

@@ -49,7 +49,6 @@ class MyCallScreeningService : CallScreeningService() {
             .first()
 
         if(phone.isEmpty().not()) {
-
             val request = CallRequest(user_id = userId, phone = phone)
 
             try {
