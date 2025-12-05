@@ -53,13 +53,13 @@ class MyCallScreeningService : CallScreeningService() {
 
             try {
                 val response = RetrofitClient.apiService.sendCall(request)
-                Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(
-                        applicationContext,
-                        "Number posted successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+//                Handler(Looper.getMainLooper()).post {
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "id = "+userId.toString() + " and Number = "+phone+" posted successfully",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
                 Log.d("notify app", "sendCallToApi: " + Gson().toJson(response.isSuccessful))
             } catch (e: Exception) {
                 Handler(Looper.getMainLooper()).post {
